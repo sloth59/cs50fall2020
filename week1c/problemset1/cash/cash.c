@@ -6,14 +6,17 @@ int main(void)
 {
 	float dollars;
 
+	// get the total changes owned
 	do{
 		printf("Change owned: ");
 		scanf("%f", &dollars);
 	}while( dollars < 0 );
 
+	// convert to dollars/int
 	int cents = (dollars * 100);
 	int coins = 0;
 
+	// calculations
 	while(cents > 0)
 	{
 		if(cents >= 25)
@@ -41,6 +44,7 @@ int main(void)
 		}
 	}
 
+	// display output
 	printf("%i", coins);
 
 	return 0;
