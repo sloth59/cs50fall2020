@@ -1,0 +1,50 @@
+sort1 uses:  BUBBLE SORT
+
+How do you know?: The time complexity is significantly less in case of sorted.
+
+random10000.txt -> 0.237s
+random50000.txt -> 5.489s
+random5000.txt  -> 0.059s
+
+reversed10000.txt -> 0.181s
+reversed50000.txt -> 3.893s
+reversed5000.txt  -> 0.058s
+
+sorted10000.txt -> 0.010s
+sorted50000.txt -> 0.036s
+sorted5000.txt  -> 0.005s
+
+
+sort2 uses: MERGE SORT
+
+How do you know?: The time complexity is less than other two and the time complexity is somewhat identical in all cases.
+
+random10000.txt -> 0.010s
+random50000.txt -> 0.050s
+random5000.txt  -> 0.006s
+
+reversed10000.txt -> 0.007s
+reversed50000.txt -> 0.015s
+reversed5000.txt  -> 0.005s
+
+sorted10000.txt -> 0.007s
+sorted50000.txt -> 0.017s
+sorted5000.txt  -> 0.006s
+
+
+sort3 uses: SELECTION SORT
+
+How do you know?: The time complexity is along the spectrum with first one alebit faster but there is no optimization on time complexity in case of sorted.
+
+random10000.txt -> 0.105s
+random50000.txt -> 2.068s
+random5000.txt  -> 0.035s
+
+reversed10000.txt -> 0.100s
+reversed50000.txt -> 2.064s
+reversed5000.txt  -> 0.031s
+
+sorted10000.txt -> 0.101s
+sorted50000.txt -> 2.101s
+sorted5000.txt  -> 0.025s
+
