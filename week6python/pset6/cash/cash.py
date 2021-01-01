@@ -1,9 +1,11 @@
-# Ask the user how much change is owed and then print the minimum number of coins with which that change can be made.Assume that the only coins available are quarters (25¢), dimes (10¢), nickels (5¢), and pennies (1¢). 
+# Ask the user how much change is owed and then print the minimum number of coins with which that change can be made.Assume that the only coins available are quarters (25¢), dimes (10¢), nickels (5¢), and pennies (1¢).
+import cs50
+
 
 def main():
     # get the total changes owned
     while True:
-        dollars = float(input("Change owned: "))
+        dollars = cs50.get_float("Change owned: ")
         if dollars > 0:
             break
 
@@ -28,6 +30,7 @@ def main():
 
     # display output
     print(coins)
+
 
 if __name__ == "__main__":
     main()

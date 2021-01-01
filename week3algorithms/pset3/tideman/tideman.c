@@ -1,9 +1,8 @@
 // ranked choice voting -> tideman voting/ ranked pairs || guarenteed to produce the condorcet winner (person who would have won any head to head matchup against another candidate) if one  exists
-
-
+#include <cs50.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
+#include <stdbool.h>
 
 // Max number of candidates
 #define MAX 9
@@ -23,21 +22,22 @@ typedef struct
 pair;
 
 // Array of candidates
-char candidates[MAX][20];
+string candidates[MAX];
 pair pairs[MAX * (MAX - 1) / 2];
 
 int pair_count;
 int candidate_count;
 
 // Function prototypes
-bool vote(int rank, char* name, int ranks[]);
+bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
 void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+bool cycle(int winner, int loser);
 
-int main(int argc, char* argv[])
+int main(int argc, string argv[])
 {
     // Check for invalid usage
     if (argc < 2)
@@ -68,9 +68,7 @@ int main(int argc, char* argv[])
     }
 
     pair_count = 0;
-    int voter_count;
-    printf("Number of voters: ");
-    scanf("%d", voter_count);
+    int voter_count = get_int("Number of voters: ");
 
     // Query for votes
     for (int i = 0; i < voter_count; i++)
@@ -81,9 +79,7 @@ int main(int argc, char* argv[])
         // Query for each rank
         for (int j = 0; j < candidate_count; j++)
         {
-            char name[20];
-            printf("Rank %i: ", j+1);
-            scanf("%s", name);
+            string name = get_string("Rank %i: ", j + 1);
 
             if (!vote(j, name, ranks))
             {
@@ -105,11 +101,11 @@ int main(int argc, char* argv[])
 }
 
 // Update ranks given a new vote
-bool vote(int rank, char* name, int ranks[])
+bool vote(int rank, string name, int ranks[])
 {
-    for(int i=0; i < candidate_count; i+=1)
+    for (int i = 0; i < candidate_count; i += 1)
     {
-        if(strcmp(candidates[i], name) == 0)
+        if (strcmp(candidates[i], name) == 0)
         {
             ranks[rank] = i;
             return true;
@@ -121,11 +117,11 @@ bool vote(int rank, char* name, int ranks[])
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    for(int i=0; i < candidate_count; i+=1)
+    for (int i = 0; i < candidate_count; i += 1)
     {
-        for(int j=i+1; j < candidate_count; j+=1)
+        for (int j = i + 1; j < candidate_count; j += 1)
         {
-            preferences[ranks[i]][candidates[i]] += 1;
+            preferences[ranks[i]][ranks[j]] += 1;
         }
     }
     return;
@@ -134,15 +130,15 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    for(int i=0; i < candidate_count; i+=1)
+    for (int i = 0; i < candidate_count; i += 1)
     {
-        for(int j=0; j < candidate_count; j+=1)
+        for (int j = 0; j < candidate_count; j += 1)
         {
-            if(preferences[candidates[i]][candidates[j]] > preferences[candidates[j]][candidates[i]])
+            if (preferences[i][j] > preferences[j][i])
             {
                 pair_count += 1;
-                pairs[pair_count - 1].winner = candidates[i];
-                pairs[pair_count - 1].loser = candidates[j];
+                pairs[pair_count - 1].winner = i;
+                pairs[pair_count - 1].loser = j;
             }
         }
     }
@@ -152,21 +148,19 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    int tempa,tempb,diffa,diffb;
-    for(int i=0; i < pair_count -1; i+=1)
+    int diffa, diffb;
+    pair temp;
+    for (int i = 0; i < pair_count - 1; i += 1)
     {
-        for(int j=i+1; j < pair_count; j+=1)
+        for (int j = i + 1; j < pair_count; j += 1)
         {
-            diffa = prefernces[pairs[i].winner][pairs[i].loser] - preferences[pairs[i].loser][pairs[i].winner];
-            diffb = prefernces[pairs[j].winner][pairs[j].loser] - preferences[pairs[j].loser][pairs[j].winner];
-            if(diffa < diffb)
+            diffa = preferences[pairs[i].winner][pairs[i].loser];
+            diffb = preferences[pairs[j].winner][pairs[j].loser];
+            if (diffa < diffb)
             {
-                tempa = pairs[i].winner;
-                tempb = pairs[i].loser;
-                pairs[j].winner = pairs[i].winner;
-                pairs[j].loser = pairs[i].loser;
-                pairs[i].winner = tempa;
-                pairs[i].loser = tempb;
+                temp = pairs[i];
+                pairs[i] = pairs[j];
+                pairs[j] = temp;
             }
         }
     }
@@ -176,18 +170,75 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    for(int i=0; i < pair_count; i+=0)
+    for (int i = 0; i < pair_count; i += 1)
     {
-        if()
+        if (!cycle(pairs[i].winner, pairs[i].loser))
+        {
             locked[pairs[i].winner][pairs[i].loser] = true;
+        }
     }
     return;
+}
+
+bool cycle(int winner, int loser)
+{
+    if (locked[loser][winner] == true)
+    {
+        return true;
+    }
+    for (int i = 0; i < candidate_count; i += 1)
+    {
+        if (locked[i][winner])
+        {
+            return cycle(i, loser);
+        }
+    }
+    return false;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    int k, min = 0;
+    for (int i = 0; i < candidate_count; i += 1)
+    {
+        k = 0;
+        for (int j = 0; j < candidate_count; j += 1)
+        {
+            if (locked[j][i])
+            {
+                k += 1;
+            }
+        }
+        if (k == 0)
+        {
+            printf("%s\n", candidates[i]);
+            return;
+        }
+
+        if (min == 0)
+        {
+            min = k;
+        }
+        else if (k < min)
+        {
+            min = k;
+        }
+    }
+
+    for (int i = 0; i < candidate_count; i += 1)
+    {
+        for (int j = 0; j < candidate_count; j += 1)
+        {
+            if (locked[j][i])
+            {
+                k += 1;
+            }
+        }
+        if (k == min)
+        {
+            printf("%s\n", candidates[i]);
+        }
+    }
     return;
 }
-

@@ -41,33 +41,27 @@ person *create_family(int generations)
 {
     int i;
     // Allocate memory for new person
-    person* list = NULL;
-    person* child = malloc(sizeof(person));
+    person *child = malloc(sizeof(person));
 
     // Generation with parent data
     if (generations > 1)
     {
-        person* mother = malloc(sizeof(person));
-        person* father = malloc(sizeof(person));
-        person* elders[] = {mother, father};
         // Recursively create blood type histories for parents
-        for(i=0; i<2; i++)
+        for (i = 0; i < 2; i++)
         {
-            elders[i] = create_family(generations - 1);
-            child->parents[i] = elders[i];
-            elders[i] = NULL;
+            child->parents[i] = create_family(generations - 1);
         }
         // Randomly assign child alleles based on parents
-        for(i=0; i<2; i++)
+        for (i = 0; i < 2; i++)
         {
-            child->alleles[i] = child->parents[i]->alleles[rand()%2];
+            child->alleles[i] = child->parents[i]->alleles[rand() % 2];
         }
     }
 
     // Generation without parent data
     else
     {
-        for(i=0; i<2; i++)
+        for (i = 0; i < 2; i++)
         {
             // Set parent pointers to NULL
             child->parents[i] = NULL;
@@ -76,24 +70,22 @@ person *create_family(int generations)
         }
     }
 
-    list = child;
-    child = NULL;
     // Return newly created person
-    return list;
+    return child;
 }
 
 // Free `p` and all ancestors of `p`.
 void free_family(person *p)
 {
-    int i;
     // Handle base case
-    for(i=0; i<2; i++)
+    if (p == NULL)
     {
-        if(p->parents[i] != NULL)
-        {
-            // Free parents
-            free_family(p->parents[i]);
-        }
+        return;
+    }
+    // Free parents
+    for (int i = 0; i < 2; i++)
+    {
+        free_family(p->parents[i]);
     }
     // Free child
     free(p);

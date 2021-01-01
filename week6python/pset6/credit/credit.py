@@ -4,10 +4,10 @@ def main():
     # get/validate the input card number
     while True:
         cardnum = int(input("Number: "))
-        length = getlength(cardnum)
-        if cardnum > 0 and (length == 13 or length == 15 or length == 16):
+        if cardnum > 0:
             break
-	
+
+    length = len(str(cardnum))
     # get first two digits of the card number
     firsttwo = gettwo(cardnum)
 
@@ -27,19 +27,19 @@ def luhncheck(num):
         lastn = num % 10
         num = num // 10
 
-        if count%2 == 0:
+        if count % 2 == 0:
             evensum += lastn
-		
+
         else:
             lastn *= 2
             if lastn > 9:
-                lastn = lastn//10 + lastn%10
+                lastn = lastn//10 + lastn % 10
             oddsum += lastn
         count += 1
 
     finalsum = evensum + oddsum
 
-    if finalsum%10 == 0:
+    if finalsum % 10 == 0:
         return True
     else:
         return False
@@ -50,17 +50,8 @@ def gettwo(num):
         num = num // 10
         if num < 99:
             break
-    return num;
+    return num
 
-
-def getlength(num):
-    len = 0
-    while True:
-        num = num // 10
-        len += 1
-        if num == 0:
-            break
-    return len;
 
 def vendorcheck(length, firsttwo):
     if length == 16:

@@ -30,10 +30,10 @@ int count = 0;
 bool check(const char *word)
 {
     int hashval = hash(word);
-    node* n = table[hashval];
-    while(n != NULL)
+    node *n = table[hashval];
+    while (n != NULL)
     {
-        if(strcasecmp(n->word, word) == 0)
+        if (strcasecmp(n->word, word) == 0)
         {
             return true;
         }
@@ -60,17 +60,17 @@ unsigned int hash(const char *word)
 bool load(const char *dictionary)
 {
     char currentword[LENGTH + 1];
-    FILE* dict = fopen(dictionary, "r");
+    FILE *dict = fopen(dictionary, "r");
     if (dict == NULL)
     {
         return false;
     }
-    while(fscanf(dict, "%s", currentword) != EOF)
+    while (fscanf(dict, "%s", currentword) != EOF)
     {
-        node* n = malloc(sizeof(node));
-        if(n == NULL)
+        node *n = malloc(sizeof(node));
+        if (n == NULL)
         {
-        return false;
+            return false;
         }
         strcpy(n->word, currentword);
         int hashval = hash(currentword);
@@ -94,11 +94,11 @@ unsigned int size(void)
 bool unload(void)
 {
     int i;
-    for(i=0; i<N; i++)
+    for (i = 0; i < N; i++)
     {
-        node* n = table[i];
-        node* tmp = table[i];
-        while(tmp != NULL)
+        node *n = table[i];
+        node *tmp = table[i];
+        while (tmp != NULL)
         {
             n = n->next;
             free(tmp);
